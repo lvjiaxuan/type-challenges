@@ -112,7 +112,7 @@ async function main() {
   const tschUrl = await getTschUrl(challenge)
   const decode = await getTschUrlDecode(tschUrl)
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
-  console.log(`Successfully add: ${ writePath }`)
+  console.log(`\nSuccessfully add (ctrl + c to open it): ${ writePath }`)
 }
 
 try {
