@@ -25,11 +25,12 @@
 
 /* _____________ Your Code Here _____________ */
 
-type IsUnion<T, U = T> = [T] extends [never] ? false : T extends T ? [U] extends [T] ? false : true : false
+// type IsUnion<T, U = T> = [T] extends [never] ? false : T extends T ? [U] extends [T] ? false : true : false
 
 type LongestCommonPrefix<T extends string[], P extends string = ''> =
   T extends `${P}${infer F extends string}${string}`[]
     // ? IsUnion<F> extends true
+    // https://github.com/type-challenges/type-challenges/issues/35251
     ? {} extends {[P in F as Exclude<F, P>]: 1}
       ? LongestCommonPrefix<T, `${P}${F}`>
       : P
