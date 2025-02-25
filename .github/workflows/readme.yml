@@ -26,5 +26,5 @@ jobs:
           pnpm i
           pnpm dlx jiti ./scripts/readme.ts
 
-      env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
