@@ -25,7 +25,7 @@ type CartesianProduct<T, U> = T extends T
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
-import { ExpectFalse, NotEqual } from '@type-challenges/utils'
+import type { ExpectFalse, NotEqual } from '@type-challenges/utils'
 
 type cases = [
   Expect<Equal<CartesianProduct<1 | 2, 'a' | 'b'>, [2, 'a'] | [1, 'a'] | [2, 'b'] | [1, 'b']>>,

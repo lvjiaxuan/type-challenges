@@ -1,10 +1,30 @@
 {
   "include": ["**/*.ts"],
+
+  // https://bun.sh/docs/typescript#suggested-compileroptions
   "compilerOptions": {
+    // Enable latest features
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
-    "module": "ESNext", /* Specify what module code is generated. */
-    "moduleResolution": "Bundler", /* Specify how TypeScript looks up a file from a given module specifier. */
-    "strict": true, /* Enable all strict type-checking options. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // Some stricter flags
+    // "noUnusedLocals": true, only close for this project
+    // "noUnusedParameters": true, only close for this project
+    "noPropertyAccessFromIndexSignature": true,
   }
 }

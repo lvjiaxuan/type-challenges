@@ -37,7 +37,7 @@ type Transpose<M extends number[][]> = M[number] extends [ infer A, ...infer Res
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
-import { ExpectFalse, NotEqual } from '@type-challenges/utils'
+import type { ExpectFalse, NotEqual } from '@type-challenges/utils'
 
 type cases = [
   Expect<Equal<Transpose<[]>, []>>,

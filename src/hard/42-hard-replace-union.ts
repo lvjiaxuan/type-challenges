@@ -24,7 +24,7 @@ type UnionReplace<T, U extends [unknown, unknown][]> = U extends [
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
-import { ExpectFalse, NotEqual } from '@type-challenges/utils'
+import type { ExpectFalse, NotEqual } from '@type-challenges/utils'
 
 type cases = [
   // string -> null

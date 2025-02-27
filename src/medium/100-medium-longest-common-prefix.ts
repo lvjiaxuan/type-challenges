@@ -62,3 +62,15 @@ type cases = [
   > View solutions: https://tsch.js.org/35045/solutions
   > More Challenges: https://tsch.js.org
 */
+
+const createKeyboard = (modelID: any) => {
+  const _defaultModelID = 23;
+  // 'defaultModelID' is declared but its value is never read.
+  return { type: "keyboard", modelID };
+};
+
+const createDefaultKeyboard = (_modelID: number, xx: string) => {
+  // 'modelID' is declared but its value is never read.
+    const defaultModelID = 23;
+    return { type: "keyboard", modelID: defaultModelID };
+  };

@@ -77,7 +77,7 @@ const getNewChallenge = () => {
 
 const getTschUrl = (challenge: string) => {
   dotenv.config({ path: '.env.local' })
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
+  const octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] })
 
   return octokit.repos.getReadmeInDirectory({
     owner: 'type-challenges',
