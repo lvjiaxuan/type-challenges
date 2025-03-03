@@ -28,8 +28,10 @@ const main = async () => {
   if (!gitStatus.includes('working tree clean')) {
     execSync('git commit -m "docs: sync from org."')
     execSync('git push')
+    core.setOutput('updated', true)
     core.notice('README.md updated.')
   } else {
+    core.setOutput('updated', false)
     core.notice('README.md not updated.')
   }
 

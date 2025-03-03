@@ -1,9 +1,8 @@
-name: Update README.md
+name: Add new challenge
 
 on:
   workflow_dispatch: {}
-  schedule:
-    - cron: 0 0 * * 0
+  workflow_call: {}
 
 jobs:
   main:
@@ -23,14 +22,9 @@ jobs:
         run: |
           git config user.name "${{ github.triggering_actor }}"
           git config user.email "${{ vars.NOREPLY_EMAIL }}"
-          
 
-      - name: Update README.md
+      - name: Add new challenge
         run: |
           bun install
-          bun ./scripts/readme.ts
+          bun ./scripts/add.ts
 
-  add:
-    needs: main
-    if: ${{ needs.main.outputs.updated }}
-    uses: lvjiaxuan/type-challenges/.github/workflows/add.yml@master

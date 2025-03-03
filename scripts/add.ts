@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 import lzstring from './vendor/lzstring.min'
-import * as dotenv from 'dotenv'
 import { Octokit } from '@octokit/rest'
 import https from 'node:https'
-
+import core from '@actions/core'
+import { execSync } from 'node:child_process'
 
 const getNewChallenge = () => {
 
@@ -36,10 +36,8 @@ const getNewChallenge = () => {
   }
 
 
-  console.log(
-    'Total(origin): ', originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size,
-    ', Total(local): ', localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length,
-  )
+  core.notice(`Total(origin): ${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }`)
+  core.notice(`Total(local): ${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
 
 
   let writePath = ''
@@ -52,7 +50,7 @@ const getNewChallenge = () => {
       // fs.writeFileSync(`./src/${ key }/${ idx }-${ challenges[0] }.ts`, '', { encoding: 'utf-8' })
       newChallengeWithoutNo = `${ challenges[0] }`
       writePath = `./src/${ key }/${ idx }-${ challenges[0] }.ts`
-      console.log(`New ${ key } challenges found: `, challenges)
+      core.notice(`New ${ key } challenges found: ${ challenges.toString() }`)
       break
     }
   }
@@ -65,7 +63,7 @@ const getNewChallenge = () => {
   })
 
   if (!writePath) {
-    console.log('No new challenge.')
+    core.notice('No new challenge.')
     process.exit(0)
   }
 
@@ -76,7 +74,6 @@ const getNewChallenge = () => {
 }
 
 const getTschUrl = (challenge: string) => {
-  dotenv.config({ path: '.env.local' })
   const octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] })
 
   return octokit.repos.getReadmeInDirectory({
@@ -91,7 +88,6 @@ const getTschUrl = (challenge: string) => {
 
 const getTschUrlDecode = (url: string) =>
   new Promise<string>((resolve, reject) =>
-    // eslint-disable-next-line no-promise-executor-return
     https.get(url, response => {
       let tspUrl = ''
 
@@ -107,16 +103,24 @@ const getTschUrlDecode = (url: string) =>
       response.on('error', reject)
     }))
 
+
+const commit = (writePath: string, decode: string) => {
+  fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
+  execSync('git add .')
+  execSync('git commit -m "chore: add new challenge"')
+  execSync('git push')
+  core.notice(`Successfully added: ${ writePath }`)
+}
+
 async function main() {
   const { writePath, originChallengeWithNo: challenge } = getNewChallenge()
   const tschUrl = await getTschUrl(challenge)
   const decode = await getTschUrlDecode(tschUrl)
-  fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
-  console.log(`\nSuccessfully added (\`ctrl + c\` to open it): ${ writePath }`)
+  commit(writePath, decode)
 }
 
 try {
   void main()
-} catch (error) {
-  console.log(error)
+} catch (error: any) {
+  core.error(error.message)
 }

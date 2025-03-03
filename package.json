@@ -3,15 +3,13 @@
   "author": "lvjiaxuan <471501748@qq.com> (https://github.com/lvjiaxuan)",
   "license": "MIT",
   "scripts": {
-    "tsc": "tsc --noEmit",
-    "n": "bun ./scripts/new.ts"
+    "tsc": "tsc --noEmit"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@octokit/rest": "^21.1.0",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^22.13.1",
-    "dotenv": "^16.4.7"
+    "@types/node": "^22.13.1"
   },
   "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
 }
