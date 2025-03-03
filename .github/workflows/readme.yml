@@ -8,6 +8,11 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+
+    env:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ACTIONS_STEP_DEBUG : true
+
     steps:
       - uses: actions/checkout@v4
 
@@ -15,16 +20,18 @@ jobs:
         with:
           node-version: 22
 
-      - run: |
-          git config user.name "${{ github.triggering_actor }}"
-          git config user.email "${{ secrets.NOREPLY_EMAIL }}"
-          
-      # https://github.com/nodejs/corepack/issues/612
-      - run: |
-          npm install --global corepack@latest
-          corepack enable pnpm
-          pnpm i
-          pnpm dlx jiti ./scripts/readme.ts
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Git
+        run: |
+          git config user.name "${{ github.triggering_actor }}"
+          git config user.email "${{ vars.NOREPLY_EMAIL }}"
+          
+
+      - name: Update README.md
+        run: |
+          bun install
+          bun ./scripts/readme.ts
+

@@ -7,6 +7,7 @@
     "n": "bun ./scripts/new.ts"
   },
   "devDependencies": {
+    "@actions/core": "^1.11.1",
     "@octokit/rest": "^21.1.0",
     "@type-challenges/utils": "^0.1.1",
     "@types/node": "^22.13.1",
