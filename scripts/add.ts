@@ -36,8 +36,7 @@ const getNewChallenge = () => {
   }
 
 
-  core.notice(`Total(origin): ${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }`)
-  core.notice(`Total(local): ${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
+  core.notice(`Total(origin): ${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }\nTotal(local): ${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
 
 
   let writePath = ''
