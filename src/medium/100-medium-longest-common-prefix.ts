@@ -25,17 +25,22 @@
 
 /* _____________ Your Code Here _____________ */
 
-// type IsUnion<T, U = T> = [T] extends [never] ? false : T extends T ? [U] extends [T] ? false : true : false
 
+// https://github.com/type-challenges/type-challenges/issues/35251
 type LongestCommonPrefix<T extends string[], P extends string = ''> =
   T extends `${P}${infer F extends string}${string}`[]
-    // ? IsUnion<F> extends true
-    // https://github.com/type-challenges/type-challenges/issues/35251
-    ? {} extends {[P in F as Exclude<F, P>]: 1}
+    ? {} extends {[K in F as Exclude<F, K>]: 1} // a alternative way to check if a type is a union type.
       ? LongestCommonPrefix<T, `${P}${F}`>
       : P
     : P
 
+// type IsUnion<T, U = T> = [T] extends [never] ? false : T extends T ? [U] extends [T] ? false : true : false
+// type LongestCommonPrefix<T extends string[], P extends string = ''> =
+//   T extends `${P}${infer F extends string}${string}`[]
+//     ? IsUnion<F> extends false
+//       ? LongestCommonPrefix<T, `${P}${F}`>
+//       : P
+//     : P
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

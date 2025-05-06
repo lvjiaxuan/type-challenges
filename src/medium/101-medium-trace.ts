@@ -20,12 +20,29 @@
   type Test = Trace<Arr> // expected to be 1 | 4
   ```
 
+  1,2,3,4,5
+  1,2,3,4,5
+  1,2,3,4,5
+  1,2,3,4,5
+  1,2,3,4,5
+
   > View on GitHub: https://tsch.js.org/35191
 */
 
 /* _____________ Your Code Here _____________ */
 
-type Trace<T extends any[][]> = any
+// It has recursive type declarations struggle with longer tuples.
+type Trace<
+  T extends (number | string)[][],
+  Length extends number = T['length'],
+  IndexArr extends 1[] = [],
+  Index extends number = IndexArr['length'],
+> = Index extends Length
+  ? never
+  : T[Index][Index] | Trace<T, Length, [ 1, ...IndexArr ]>
+
+// https://github.com/type-challenges/type-challenges/issues/35247
+type Trace2<T extends any[][]> = {[P in keyof T]: T[P][P & keyof T[P]]}[number]
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
