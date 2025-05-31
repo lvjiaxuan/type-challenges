@@ -7,8 +7,8 @@
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
-    "@octokit/rest": "^21.1.1",
+    "@octokit/rest": "^22.0.0",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^22.15.21"
+    "@types/node": "^22.15.29"
   }
 }
