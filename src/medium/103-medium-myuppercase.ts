@@ -12,7 +12,7 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyUppercase<T extends string> = any
+type MyUppercase<T extends string> = T extends `${infer F}${infer R}` ? `${Capitalize<F>}${MyUppercase<R>}` : T;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
