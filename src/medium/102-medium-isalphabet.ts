@@ -12,7 +12,7 @@
 
 /* _____________ Your Code Here _____________ */
 
-type IsAlphabet<S extends string> = any
+type IsAlphabet<S extends string> = Uppercase<S> extends Lowercase<S> ? false : true;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
