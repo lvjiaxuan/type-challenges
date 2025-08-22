@@ -36,7 +36,7 @@ const getNewChallenge = () => {
   }
 
 
-  core.notice(`Total(origin): ${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }\nTotal(local): ${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
+  core.notice(`Total: origin-${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }, local-${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
 
 
   let writePath = ''
@@ -49,7 +49,7 @@ const getNewChallenge = () => {
       // fs.writeFileSync(`./src/${ key }/${ idx }-${ challenges[0] }.ts`, '', { encoding: 'utf-8' })
       newChallengeWithoutNo = `${ challenges[0] }`
       writePath = `./src/${ key }/${ idx }-${ challenges[0] }.ts`
-      core.notice(`New ${ key } challenges found: ${ challenges.toString() }`)
+      core.notice(`New ${ key } challenges have been found: ${ challenges.toString() }.`)
       break
     }
   }

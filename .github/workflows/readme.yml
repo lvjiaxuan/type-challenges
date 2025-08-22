@@ -12,6 +12,9 @@ jobs:
     env:
       TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    outputs:
+      updated: ${{ steps.update_readme.outputs.updated }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,9 +26,9 @@ jobs:
         run: |
           git config user.name "${{ github.triggering_actor }}"
           git config user.email "${{ vars.NOREPLY_EMAIL }}"
-          
 
       - name: Update README.md
+        id: update_readme
         run: |
           bun install
           bun ./scripts/readme.ts
