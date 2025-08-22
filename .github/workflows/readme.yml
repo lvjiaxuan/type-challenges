@@ -35,5 +35,5 @@ jobs:
 
   add:
     needs: main
-    if: ${{ needs.main.outputs.updated }}
+    if: ${{ needs.main.outputs.updated == 'true' }}
     uses: lvjiaxuan/type-challenges/.github/workflows/add.yml@master
