@@ -7,7 +7,7 @@ import { execSync } from 'node:child_process'
 
 const getNewChallenge = () => {
 
-  const readmeContent = fs.readFileSync('./README.md', { encoding: 'utf-8' })
+  const readmeContent = fs.readFileSync('./README.org.md', { encoding: 'utf-8' })
   const matches = readmeContent.match(/\d+-(easy|medium|hard|extreme){1}-[\w|-]+(?=\/README\.md)/g)!
   const originLevels = {
     easy: new Set<string>(),

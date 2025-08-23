@@ -15,7 +15,7 @@ const main = async () => {
 
 
   fsp.writeFileSync(
-    'README.md',
+    'README.org.md',
     Buffer
       .from(res.data.content, 'base64')
       .toString()
@@ -29,10 +29,10 @@ const main = async () => {
     execSync('git commit -m "docs: sync from org."')
     execSync('git push')
     core.setOutput('updated', true)
-    core.notice('README.md has been updated.')
+    core.notice('README.org.md has been updated.')
   } else {
     core.setOutput('updated', false)
-    core.notice('README.md has not updated.')
+    core.notice('README.org.md has not updated.')
   }
 
   process.exit(0)

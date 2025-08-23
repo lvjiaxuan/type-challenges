@@ -1,4 +1,4 @@
-name: Update README.md
+name: Update README.org.md
 
 on:
   workflow_dispatch: {}
@@ -27,7 +27,7 @@ jobs:
           git config user.name "${{ github.triggering_actor }}"
           git config user.email "${{ vars.NOREPLY_EMAIL }}"
 
-      - name: Update README.md
+      - name: Update README.org.md
         id: update_readme
         run: |
           bun install
