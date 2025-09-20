@@ -9,6 +9,6 @@
     "@actions/core": "^1.11.1",
     "@octokit/rest": "^22.0.0",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^24.3.3"
+    "@types/node": "^24.5.2"
   }
 }
