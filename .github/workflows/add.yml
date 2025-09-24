@@ -1,4 +1,4 @@
-name: Add new challenge
+name: Add new challenge(s)
 
 on:
   workflow_dispatch: {}
@@ -22,7 +22,7 @@ jobs:
           git config user.name "${{ github.triggering_actor }}"
           git config user.email "${{ vars.NOREPLY_EMAIL }}"
 
-      - name: Add new challenge
+      - name: Add new challenge(s)
         run: |
           bun install
           bun ./scripts/add.ts

@@ -49,10 +49,10 @@ export function getNewChallenges() {
     extreme: [...orgChallenges.extreme].filter(item => !localChallenges.extreme.has(item)),
   }
 
-  core.notice(`New challenges found:
-- easy: ${newChallenges.easy},
-- medium: ${newChallenges.medium},
-- hard: ${newChallenges.hard},
+  core.notice(`New challenges found:\n
+- easy: ${newChallenges.easy},\n
+- medium: ${newChallenges.medium},\n
+- hard: ${newChallenges.hard},\n
 - extreme: ${newChallenges.extreme}`)
 
   const result: { writePath: string, name4Tsch: string }[] = []
@@ -114,8 +114,10 @@ function getTschUrlDecode(url: string) {
 }
 
 function commit(writePath: string, decode: string) {
+  console.log(decode)
+  console.log(Object.prototype.toString.call(decode))
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
-  execSync('git add .')
+  execSync(`git add ${writePath}`)
   execSync('git commit -m "chore: add new challenge(s)."')
   execSync('git push')
   core.notice(`Successfully added: ${writePath}`)
@@ -123,8 +125,8 @@ function commit(writePath: string, decode: string) {
 
 async function main() {
   const challenges = getNewChallenges()
-  for (const { writePath, name4Tsch: challenge } of challenges) {
-    const tschUrl = await getTschUrl(challenge)
+  for (const { writePath, name4Tsch } of challenges) {
+    const tschUrl = await getTschUrl(name4Tsch)
     const decode = await getTschUrlDecode(tschUrl)
     commit(writePath, decode)
   }
