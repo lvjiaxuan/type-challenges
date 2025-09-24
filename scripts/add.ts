@@ -12,9 +12,9 @@ type ChallengeLevel = 'easy' | 'medium' | 'hard' | 'extreme'
 export function getNewChallenges() {
   const orgReadme = fs.readFileSync('./README.org.md', { encoding: 'utf-8' })
 
-  const orgMatches = orgReadme.matchAll(/(easy|medium|hard|extreme)-([\w-]+)/g)
+  const orgMatches = [...orgReadme.matchAll(/questions\/(\d+)-(easy|medium|hard|extreme)-([\w-]+)/g)]
 
-  const groupByLevel = Object.groupBy(orgMatches, item => item[1])
+  const groupByLevel = Object.groupBy(orgMatches, item => item[2])
 
   const orgChallenges: Record<ChallengeLevel, Set<string>> = {
     easy: new Set<string>(),
@@ -25,7 +25,7 @@ export function getNewChallenges() {
 
   for (const level in orgChallenges) {
     const typeLevel = level as ChallengeLevel
-    orgChallenges[typeLevel] = new Set(...(groupByLevel[typeLevel]?.flatMap(item => item[2]) || []))
+    orgChallenges[typeLevel] = new Set(groupByLevel[typeLevel]?.flatMap(item => item[3]))
   }
 
   const localChallenges: Record<ChallengeLevel, Set<string>> = {
@@ -55,7 +55,7 @@ export function getNewChallenges() {
 - hard: ${newChallenges.hard},
 - extreme: ${newChallenges.extreme}`)
 
-  const result: { writePath: string, challengeName: string }[] = []
+  const result: { writePath: string, name4Tsch: string }[] = []
 
   for (const level in newChallenges) {
     const challenges = newChallenges[level as ChallengeLevel]
@@ -65,8 +65,9 @@ export function getNewChallenges() {
       let newIdx = sorted.length ? +sorted[0].match(/\d+/)! + 1 : 1
 
       challenges.forEach((name) => {
-        const writePath = `./src/${level}/${newIdx}-${name}.ts`
-        result.push({ writePath, challengeName: name })
+        const writePath = `./src/${level}/${newIdx}-${level}-${name}.ts`
+        const findTheNo = orgMatches.find(i => i[3] === name)!
+        result.push({ writePath, name4Tsch: `${findTheNo[1]}-${level}-${name}` })
         newIdx++
       })
     }
@@ -115,14 +116,14 @@ function getTschUrlDecode(url: string) {
 function commit(writePath: string, decode: string) {
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
   execSync('git add .')
-  execSync('git commit -m "chore: add new challenge"')
+  execSync('git commit -m "chore: add new challenge(s)."')
   execSync('git push')
   core.notice(`Successfully added: ${writePath}`)
 }
 
 async function main() {
   const challenges = getNewChallenges()
-  for (const { writePath, challengeName: challenge } of challenges) {
+  for (const { writePath, name4Tsch: challenge } of challenges) {
     const tschUrl = await getTschUrl(challenge)
     const decode = await getTschUrlDecode(tschUrl)
     commit(writePath, decode)

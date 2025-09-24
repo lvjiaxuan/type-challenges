@@ -5,7 +5,8 @@ import process from 'node:process'
 import core from '@actions/core'
 import { Octokit } from '@octokit/rest'
 
-const octokit = new Octokit({ auth: process.env.TOKEN })
+// @ts-expect-error honor eslint
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
 
 async function main() {
   const res = await octokit.rest.repos.getReadme({

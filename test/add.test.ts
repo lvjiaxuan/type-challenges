@@ -3,36 +3,39 @@ import { expect, it } from 'vitest'
 
 it('for dev', () => {
   const orgReadme = 'https://github.com/type-challenges/type-challenges/blob/main/questions/00004-medium-pick-me/README.mdhttps://github.com/type-challenges/type-challenges/blob/main/questions/00004-easy-pick/README.mdhttps://github.com/type-challenges/type-challenges/blob/main/questions/00043-easy-exclude/README.md'
+  // const orgReadme = fs.readFileSync('./README.org.md', { encoding: 'utf-8' })
 
-  const orgMatches = orgReadme.matchAll(/(easy|medium|hard|extreme)-([\w-]+)/g)
+  const orgMatches = [...orgReadme.matchAll(/questions\/(\d+)-(easy|medium|hard|extreme)-([\w-]+)/g)]
 
-  expect([...orgMatches]).toMatchInlineSnapshot(`
+  expect(orgMatches[1]).toMatchInlineSnapshot(`
     [
-      [
-        "medium-pick-me",
-        "medium",
-        "pick-me",
-      ],
-      [
-        "easy-pick",
-        "easy",
-        "pick",
-      ],
-      [
-        "easy-exclude",
-        "easy",
-        "exclude",
-      ],
+      "questions/00004-easy-pick",
+      "00004",
+      "easy",
+      "pick",
     ]
   `)
 
-  const groupByLevel = Object.groupBy(orgMatches, item => item[1])
+  const groupByLevel = Object.groupBy(orgMatches, (item) => {
+    return item[1]
+  })
+
   for (const key in groupByLevel) {
     // @ts-expect-error for dev
-    groupByLevel[key] = groupByLevel[key]?.flatMap(item => item[2])
+    groupByLevel[key] = new Set(groupByLevel[key]?.flatMap(item => item[3]))
   }
 
-  expect(groupByLevel).toMatchInlineSnapshot(`{}`)
+  expect(groupByLevel).toMatchInlineSnapshot(`
+    {
+      "00004": Set {
+        "pick-me",
+        "pick",
+      },
+      "00043": Set {
+        "exclude",
+      },
+    }
+  `)
 })
 
 it('for dev2', () => {
