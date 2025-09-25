@@ -1,93 +1,103 @@
-import fs from 'node:fs'
-import lzstring from './vendor/lzstring.min'
-import { Octokit } from '@octokit/rest'
-import https from 'node:https'
-import core from '@actions/core'
+import { Buffer } from 'node:buffer'
 import { execSync } from 'node:child_process'
+import fs from 'node:fs'
+import https from 'node:https'
+import process from 'node:process'
+import core from '@actions/core'
+import { Octokit } from '@octokit/rest'
+import lzstring from './vendor/lzstring.min'
 
-const getNewChallenge = () => {
+type ChallengeLevel = 'easy' | 'medium' | 'hard' | 'extreme'
 
-  const readmeContent = fs.readFileSync('./README.org.md', { encoding: 'utf-8' })
-  const matches = readmeContent.match(/\d+-(easy|medium|hard|extreme){1}-[\w|-]+(?=\/README\.md)/g)!
-  const originLevels = {
+export function getNewChallenges() {
+  const orgReadme = fs.readFileSync('./README.org.md', { encoding: 'utf-8' })
+
+  const orgMatches = [...orgReadme.matchAll(/questions\/(\d+)-(easy|medium|hard|extreme)-([\w-]+)/g)]
+
+  const groupByLevel = Object.groupBy(orgMatches, item => item[2])
+
+  const orgChallenges: Record<ChallengeLevel, Set<string>> = {
     easy: new Set<string>(),
     medium: new Set<string>(),
     hard: new Set<string>(),
     extreme: new Set<string>(),
   }
-  matches.forEach(item =>
-    originLevels[item.match(/easy|medium|hard|extreme/)![0] as keyof typeof originLevels]
-      .add(item.match(/(easy|medium|hard|extreme){1}-[\w|-]+/)![0]),
-  )
 
-
-  const localLevels = {
-    easy: fs.readdirSync('./src/easy').map(item => item.match(/(easy|medium|hard|extreme){1}-[\w|-]+/)![0]),
-    medium: fs.readdirSync('./src/medium').map(item => item.match(/(easy|medium|hard|extreme){1}-[\w|-]+/)![0]),
-    hard: fs.readdirSync('./src/hard').map(item => item.match(/(easy|medium|hard|extreme){1}-[\w|-]+/)![0]),
-    extreme: fs.readdirSync('./src/extreme').map(item => item.match(/(easy|medium|hard|extreme){1}-[\w|-]+/)![0]),
+  for (const level in orgChallenges) {
+    const typeLevel = level as ChallengeLevel
+    orgChallenges[typeLevel] = new Set(groupByLevel[typeLevel]?.flatMap(item => item[3]))
   }
 
-  const lacks = {
-    easy: [ ...originLevels.easy ].filter(item => !localLevels.easy.includes(item)),
-    medium: [ ...originLevels.medium ].filter(item => !localLevels.medium.includes(item)),
-    hard: [ ...originLevels.hard ].filter(item => !localLevels.hard.includes(item)),
-    extreme: [ ...originLevels.extreme ].filter(item => !localLevels.extreme.includes(item)),
+  const localChallenges: Record<ChallengeLevel, Set<string>> = {
+    easy: new Set<string>(),
+    medium: new Set<string>(),
+    hard: new Set<string>(),
+    extreme: new Set<string>(),
   }
 
-
-  core.notice(`Total: origin-${ originLevels.easy.size + originLevels.medium.size + originLevels.hard.size + originLevels.extreme.size }, local-${localLevels.easy.length + localLevels.medium.length + localLevels.hard.length + localLevels.extreme.length}`)
-
-
-  let writePath = ''
-  let newChallengeWithoutNo = ''
-  for (const key in lacks) {
-    const challenges = lacks[key as keyof typeof originLevels]
-    if (challenges.length) {
-      const sorts = fs.readdirSync(`./src/${ key }`).sort((a, b) => +b.match(/\d+/)! - +a.match(/\d+/)!)
-      const idx = sorts.length ? +sorts[0].match(/\d+/)! + 1 : 1
-      // fs.writeFileSync(`./src/${ key }/${ idx }-${ challenges[0] }.ts`, '', { encoding: 'utf-8' })
-      newChallengeWithoutNo = `${ challenges[0] }`
-      writePath = `./src/${ key }/${ idx }-${ challenges[0] }.ts`
-      core.notice(`New ${ key } challenges have been found: ${ challenges.toString() }.`)
-      break
-    }
-  }
-
-  let originChallengeWithNo = ''
-  matches.forEach(item => {
-    if (item.includes(newChallengeWithoutNo)) {
-      originChallengeWithNo = item
-    }
+  ;['easy', 'medium', 'hard', 'extreme'].forEach((level) => {
+    const typeLevel = level as ChallengeLevel
+    localChallenges[typeLevel] = new Set(fs.readdirSync(`./src/${level}`).map(item => item.match(new RegExp(`${level}-([\\w-]+)`))![1]))
   })
 
-  if (!writePath) {
+  core.notice(`Total: origin-${orgChallenges.easy.size + orgChallenges.medium.size + orgChallenges.hard.size + orgChallenges.extreme.size}, local-${localChallenges.easy.size + localChallenges.medium.size + localChallenges.hard.size + localChallenges.extreme.size}`)
+
+  const newChallenges = {
+    easy: [...orgChallenges.easy].filter(item => !localChallenges.easy.has(item)),
+    medium: [...orgChallenges.medium].filter(item => !localChallenges.medium.has(item)),
+    hard: [...orgChallenges.hard].filter(item => !localChallenges.hard.has(item)),
+    extreme: [...orgChallenges.extreme].filter(item => !localChallenges.extreme.has(item)),
+  }
+
+  core.notice(`New challenges found:\n
+- easy: ${newChallenges.easy},\n
+- medium: ${newChallenges.medium},\n
+- hard: ${newChallenges.hard},\n
+- extreme: ${newChallenges.extreme}`)
+
+  const result: { writePath: string, name4Tsch: string }[] = []
+
+  for (const level in newChallenges) {
+    const challenges = newChallenges[level as ChallengeLevel]
+
+    if (challenges.length) {
+      const sorted = fs.readdirSync(`./src/${level}`).sort((a, b) => +b.match(/\d+/)! - +a.match(/\d+/)!)
+      let newIdx = sorted.length ? +sorted[0].match(/\d+/)! + 1 : 1
+
+      challenges.forEach((name) => {
+        const writePath = `./src/${level}/${newIdx}-${level}-${name}.ts`
+        const findTheNo = orgMatches.find(i => i[3] === name)!
+        result.push({ writePath, name4Tsch: `${findTheNo[1]}-${level}-${name}` })
+        newIdx++
+      })
+    }
+  }
+
+  if (result.length === 0) {
     core.notice('No new challenge.')
     process.exit(0)
   }
 
-  return {
-    writePath,
-    originChallengeWithNo,
-  }
+  return result
 }
 
-const getTschUrl = (challenge: string) => {
-  const octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] })
+function getTschUrl(challenge: string) {
+  // @ts-expect-error honor eslint
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
 
   return octokit.repos.getReadmeInDirectory({
     owner: 'type-challenges',
     repo: 'type-challenges',
-    dir: `questions/${ challenge }`,
-  }).then(res => {
+    dir: `questions/${challenge}`,
+  }).then((res) => {
     const content = Buffer.from(res.data.content, 'base64').toString()
     return content.match(/https:\/\/tsch.js.org\/\d+\/play/)![0]
   })
 }
 
-const getTschUrlDecode = (url: string) =>
-  new Promise<string>((resolve, reject) =>
-    https.get(url, response => {
+function getTschUrlDecode(url: string) {
+  return new Promise<string>((resolve, reject) =>
+    https.get(url, (response) => {
       let tspUrl = ''
 
       // called when a data chunk is received.
@@ -101,25 +111,29 @@ const getTschUrlDecode = (url: string) =>
 
       response.on('error', reject)
     }))
+}
 
-
-const commit = (writePath: string, decode: string) => {
+function commit(writePath: string, decode: string) {
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
-  execSync('git add .')
-  execSync('git commit -m "chore: add new challenge"')
+  execSync('git pull')
+  execSync(`git add ${writePath}`)
+  execSync('git commit -m "chore: add new challenge(s)."')
   execSync('git push')
-  core.notice(`Successfully added: ${ writePath }`)
+  core.notice(`Successfully added: ${writePath}`)
 }
 
 async function main() {
-  const { writePath, originChallengeWithNo: challenge } = getNewChallenge()
-  const tschUrl = await getTschUrl(challenge)
-  const decode = await getTschUrlDecode(tschUrl)
-  commit(writePath, decode)
+  const challenges = getNewChallenges()
+  for (const { writePath, name4Tsch } of challenges) {
+    const tschUrl = await getTschUrl(name4Tsch)
+    const decode = await getTschUrlDecode(tschUrl)
+    commit(writePath, decode)
+  }
 }
 
 try {
   void main()
-} catch (error: any) {
+}
+catch (error: any) {
   core.error(error.message)
 }

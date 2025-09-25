@@ -3,12 +3,18 @@
   "author": "lvjiaxuan <471501748@qq.com> (https://github.com/lvjiaxuan)",
   "license": "MIT",
   "scripts": {
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "lint": "eslint",
+    "lintf": "eslint --fix",
+    "test": "vitest"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
+    "@lvjiaxuan/eslint-config": "^1.13.0",
     "@octokit/rest": "^22.0.0",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^24.5.2"
+    "@types/node": "^24.3.0",
+    "eslint": "^9.34.0",
+    "vitest": "^3.2.4"
   }
 }
