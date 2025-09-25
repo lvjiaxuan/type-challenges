@@ -81,7 +81,6 @@ You can also use some existing type utility libraries such as [type-fest](https:
 - [Type Challenges Solutions](https://github.com/ghaiklor/type-challenges-solutions)
 - [Type Gymnastics](https://github.com/g-plane/type-gymnastics)
 - [TypeType Examples](https://github.com/mistlog/typetype-examples)
-- [TypeScriptPro Solutions](https://typescriptpro.com/challenges)
 
 ### Books
 
@@ -89,7 +88,6 @@ You can also use some existing type utility libraries such as [type-fest](https:
 - [Learning TypeScript](https://www.learningtypescript.com/)
 - [TypeScript in 50 Lessons](https://typescript-book.com/)
 - [TypeScript Cookbook](https://typescript-cookbook.com/)
-
 
 ## How to Contribute
 
