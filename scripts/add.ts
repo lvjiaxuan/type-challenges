@@ -114,12 +114,10 @@ function getTschUrlDecode(url: string) {
 }
 
 function commit(writePath: string, decode: string) {
-  console.log(decode)
-  console.log(Object.prototype.toString.call(decode))
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
+  execSync('git pull')
   execSync(`git add ${writePath}`)
   execSync('git commit -m "chore: add new challenge(s)."')
-  execSync('git pull')
   execSync('git push')
   core.notice(`Successfully added: ${writePath}`)
 }
