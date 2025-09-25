@@ -119,6 +119,7 @@ function commit(writePath: string, decode: string) {
   fs.writeFileSync(writePath, decode, { encoding: 'utf-8' })
   execSync(`git add ${writePath}`)
   execSync('git commit -m "chore: add new challenge(s)."')
+  execSync('git pull')
   execSync('git push')
   core.notice(`Successfully added: ${writePath}`)
 }
