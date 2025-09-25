@@ -27,7 +27,34 @@
 
 /* _____________ Your Code Here _____________ */
 
-type ValidSudoku<M extends number[][]> = any
+// https://github.com/type-challenges/type-challenges/issues/35322
+type RN = [number];
+type R1 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+type R3 = [0 | 1 | 2,  3 | 4 | 5,  6 | 7 | 8];
+type R33 = {[I in keyof R3]: {[J in keyof R3]: `${I}-${J}`}}
+//   ^?
+
+type Values = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+type MapBool = {[N: number]: true; x: false};
+type MapX = {[N: number]: 'x'} & Record<Values, never>;
+type Key_Mapx = {[N: number]: 'x'}[never] // =>
+
+type NotAllX<V extends number, D extends number = Values> = {[K in D]: MapX[K & V]}[D];
+
+type Exp1_NotAllX = NotAllX<Values> //=>
+type Key_Exp1 = 1 & (Values) //=>
+
+type Exp2_NotAllX2 = NotAllX<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8> //=>
+type Key_Exp2 = 9 & (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8) //=>
+
+type Check<
+  M extends number[][],
+  RI extends number[],
+  RJ extends number[]
+> = {[I in keyof RI]: {[J in keyof RJ]: NotAllX<M[RI[I]][RJ[J]]>}[number]}[number];
+
+type ValidSudoku<M extends number[][]> = MapBool[Check<M, R1, RN> | Check<M, RN, R1> | Check<M, R3, R3>];
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
