@@ -13,7 +13,7 @@
     "@lvjiaxuan/eslint-config": "^1.13.0",
     "@octokit/rest": "^22.0.0",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.1",
     "eslint": "^9.36.0",
     "vitest": "^3.2.4"
   }
