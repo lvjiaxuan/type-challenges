@@ -11,10 +11,10 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@lvjiaxuan/eslint-config": "^1.13.0",
-    "@octokit/rest": "^22.0.0",
+    "@octokit/rest": "^22.0.1",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^24.6.1",
-    "eslint": "^9.36.0",
-    "vitest": "^3.2.4"
+    "@types/node": "^24.9.2",
+    "eslint": "^9.39.0",
+    "vitest": "^4.0.6"
   }
 }
