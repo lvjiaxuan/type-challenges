@@ -9,12 +9,12 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@actions/core": "^2.0.1",
+    "@actions/core": "^3.0.0",
     "@lvjiaxuan/eslint-config": "^1.13.0",
     "@octokit/rest": "^22.0.1",
     "@type-challenges/utils": "^0.1.1",
-    "@types/node": "^25.0.3",
+    "@types/node": "^25.1.0",
     "eslint": "^9.39.2",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   }
 }
